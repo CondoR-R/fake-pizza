@@ -51,6 +51,7 @@ export const CheckboxFiltersGroup: React.FC<Props> = ({
             value={searchValue}
             placeholder={searchInputPlaceholder}
             className="bg-gray-50 border-none"
+            defaultValue={defaultValue}
           />
         </div>
       )}
