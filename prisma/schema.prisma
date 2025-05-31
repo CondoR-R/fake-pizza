@@ -1,0 +1,187 @@
+// определяет клиент
+generator client {
+    provider = "prisma-client-js"
+}
+
+// определяет с какой БД нужно работать
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+// создаем таблицы
+
+// таблица пользователей
+model User {
+    // поле id тип - целое число, уникальное, при создании пользователя автоматически + 1
+    id               Int                @id @default(autoincrement())
+
+    fullName         String
+    email            String             @unique
+    password         String
+    role             UserRole           @default(USER)
+
+    // вход через
+    provider         String?
+    providerId       String?
+
+    cart             Cart?
+    orders           Order[]
+    verificationCode VerificationCode?
+
+    createdAt        DateTime           @default(now())
+    updatedAt        DateTime           @default(now())
+}
+
+// таблица категорий
+model Category {
+    id        Int           @id @default(autoincrement())
+    name      String        @unique
+
+    // создаем связь один ко многим для js (этого поля нет в БД)
+    products  Product[]
+
+    createdAt DateTime      @default(now())
+    updatedAt DateTime      @default(now())
+}
+
+// таблица продуктов
+model Product {
+    id          Int             @id @default(autoincrement())
+
+    name        String
+    imageUrl    String
+
+    // создаем связь один ко многим для js (этого поля нет в БД)
+    category    Category        @relation(fields: [categoryId], references: [id])
+    // это поле будет в БД
+    categoryId  Int
+
+    items       ProductItem[]
+
+    // связь многие ко многим
+    ingredients Ingredient[]
+
+    createdAt   DateTime        @default(now())
+    updatedAt   DateTime        @default(now())
+}
+
+model ProductItem {
+    id        Int           @id @default(autoincrement())
+
+    price     Int
+
+    // знак ? означает, что свойтво опционально
+    size      Int?
+    pizzaType Int?
+
+    product   Product       @relation(fields: [productId], references: [id])
+    productId Int
+
+    cartItems CartItem[]
+
+    createdAt DateTime      @default(now())
+    updatedAt DateTime      @default(now())
+}
+
+// таблица ингридиентов
+model Ingredient {
+    id        Int           @id @default(autoincrement())
+
+    name      String
+    price     Int
+    imageUrl  String
+
+    // связь многие ко многим
+    products  Product[]
+
+    cartItems CartItem[]
+
+    createdAt DateTime      @default(now())
+    updatedAt DateTime      @default(now())
+}
+
+// таблица корзины
+model Cart {
+    id          Int         @id @default(autoincrement())
+
+    // связь один к одному
+    user        User?       @relation(fields: [userId], references: [id])
+    userId      Int?        @unique
+
+    token       String
+
+    totalAmount Int         @default(0)
+
+    items       CartItem[]
+
+    createdAt   DateTime    @default(now())
+    updatedAt   DateTime    @default(now())
+}
+
+// таблица элементов корзины
+model CartItem {
+    id            Int           @id @default(autoincrement())
+
+    productItem   ProductItem   @relation(fields: [productItemId], references: [id])
+    productItemId Int
+
+    cart          Cart          @relation(fields: [cartId], references: [id])
+    cartId        Int
+
+    quantity      Int
+
+    ingredients   Ingredient[]
+
+    createdAt     DateTime      @default(now())
+    updatedAt     DateTime      @default(now())
+}
+
+// таблица заказов
+model Order {
+    id          Int             @id @default(autoincrement())
+
+    user        User?           @relation(fields: [userId], references: [id])
+    userId      Int?
+
+    token       String
+
+    totalAmount Int
+    status      OrderStatus
+    paymentId   String?
+
+    createdAt   DateTime        @default(now())
+    updatedAt   DateTime        @default(now())
+
+    items       Json
+
+    fullName    String
+    email       String
+    phone       String
+    addres      String
+    comment     String?
+
+}
+
+model VerificationCode {
+    id         Int      @id @default(autoincrement())
+
+    user       User     @relation(fields: [userId], references: [id])
+    userId     Int      @unique
+
+    code       String   @unique
+
+    createdAt  DateTime @default(now())
+}
+
+// статусы заказов
+enum OrderStatus {
+    PENDING
+    SUCCEEDED
+    CANCELLED
+}
+
+enum UserRole {
+    USER
+    ADMIN
+}
