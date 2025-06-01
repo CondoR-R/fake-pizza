@@ -1,3 +1,9 @@
+# Fake Pizza
+
+Веб-приложение, клон Додо пиццы.
+
+## Возможности
+
 ## Технологии
 
 ### Фреймворки
@@ -11,6 +17,7 @@
 - [Shadcn](https://ui.shadcn.com/)
 - [React use](https://streamich.github.io/react-use)
 - [Zustand](https://zustand-demo.pmnd.rs/)
+- [Bcrypt](https://www.npmjs.com/package/bcrypt)
 - [Prisma](https://www.prisma.io/)
 
 ### База данных
