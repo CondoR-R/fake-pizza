@@ -7,6 +7,7 @@ import { FilterCheckbox } from "./filter-checkbox";
 import { Input, RangeSlider } from "../ui";
 import { CheckboxFiltersGroup } from "./checkbox-filters-group";
 import { useFilterIngredients } from "@/hooks/useFilterIngregients";
+import { useSet } from "react-use";
 
 interface Props {
   className?: string;
@@ -26,7 +27,9 @@ const priceInputs = [
 ];
 
 export const Filters: React.FC<Props> = ({ className }) => {
-  const { ingredients } = useFilterIngredients();
+  const { ingredients, loading, onAddId, selectedIds } = useFilterIngredients();
+
+  const [set, { toggle }] = useSet(new Set([]));
 
   const items = ingredients.map((item) => ({
     value: String(item.id),
@@ -39,7 +42,12 @@ export const Filters: React.FC<Props> = ({ className }) => {
       {/* Верхние чекбоксы */}
       <div className="flex flex-col gap-4 mb-5">
         {topCheckboxes.map(({ text, value }) => (
-          <FilterCheckbox key={value} text={text} value={value} />
+          <FilterCheckbox
+            key={value}
+            text={text}
+            value={value}
+            name="topCheckbox"
+          />
         ))}
       </div>
       {/* ценовой диапазон */}
@@ -69,6 +77,10 @@ export const Filters: React.FC<Props> = ({ className }) => {
         limit={6}
         defaultItems={items.slice(0, 6)}
         items={items}
+        loading={loading}
+        onClickCheckbox={onAddId}
+        selectedIds={selectedIds}
+        name="ingredients"
       />
     </div>
   );
