@@ -1,9 +1,12 @@
+"use client";
+
 import { cn } from "@/lib/utils";
 import React from "react";
 import { Title } from "./title";
 import { FilterCheckbox } from "./filter-checkbox";
 import { Input, RangeSlider } from "../ui";
 import { CheckboxFiltersGroup } from "./checkbox-filters-group";
+import { useFilterIngredients } from "@/hooks/useFilterIngregients";
 
 interface Props {
   className?: string;
@@ -23,6 +26,13 @@ const priceInputs = [
 ];
 
 export const Filters: React.FC<Props> = ({ className }) => {
+  const { ingredients } = useFilterIngredients();
+
+  const items = ingredients.map((item) => ({
+    value: String(item.id),
+    text: item.name,
+  }));
+
   return (
     <div className={cn("", className)}>
       <Title text="Фильтрация" size="sm" className="mb-5 font-bold" />
@@ -57,28 +67,8 @@ export const Filters: React.FC<Props> = ({ className }) => {
         title="Ингридиенты"
         className="mt-5"
         limit={6}
-        defaultItems={[
-          { text: "Сырный соус", value: "ing-1" },
-          { text: "Моццарелла", value: "ing-2" },
-          { text: "Чеснок", value: "ing-3" },
-          { text: "Соленные огурчики", value: "ing-4" },
-          { text: "Красный лук", value: "ing-5" },
-          { text: "Томаты", value: "ing-6" },
-        ]}
-        items={[
-          { text: "Сырный соус", value: "ing-1" },
-          { text: "Моццарелла", value: "ing-2" },
-          { text: "Чеснок", value: "ing-3" },
-          { text: "Соленные огурчики", value: "ing-4" },
-          { text: "Красный лук", value: "ing-5" },
-          { text: "Томаты", value: "ing-6" },
-          { text: "Сырный соус", value: "ing-1" },
-          { text: "Моццарелла", value: "ing-2" },
-          { text: "Чеснок", value: "ing-3" },
-          { text: "Соленные огурчики", value: "ing-4" },
-          { text: "Красный лук", value: "ing-5" },
-          { text: "Томаты", value: "ing-6" },
-        ]}
+        defaultItems={items.slice(0, 6)}
+        items={items}
       />
     </div>
   );
