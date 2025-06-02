@@ -19,6 +19,7 @@
 - [Zustand](https://zustand-demo.pmnd.rs/)
 - [Bcrypt](https://www.npmjs.com/package/bcrypt)
 - [Prisma](https://www.prisma.io/)
+- [Axios](https://axios-http.com/ru/docs/intro)
 
 ### База данных
 
