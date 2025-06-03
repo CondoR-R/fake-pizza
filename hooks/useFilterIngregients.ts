@@ -8,15 +8,15 @@ type IngredientItem = Pick<Ingredient, "id" | "name">;
 interface ReturnProps {
   ingredients: IngredientItem[];
   loading: boolean;
-  selectedIds: Set<string>;
+  selectedIngredients: Set<string>;
   onAddId: (id: string) => void;
 }
 
-export const useFilterIngredients = (): ReturnProps => {
+export const useFilterIngredients = (ids?: string[]): ReturnProps => {
   const [ingredients, setIngredients] = useState<IngredientItem[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const [selectedIds, { toggle }] = useSet(new Set<string>([]));
+  const [selectedIngredients, { toggle }] = useSet(new Set<string>([]));
 
   useEffect(() => {
     (async () => {
@@ -24,6 +24,7 @@ export const useFilterIngredients = (): ReturnProps => {
       try {
         const ingredients: Ingredient[] = await Api.ingredients.getAll();
         setIngredients(ingredients.map(({ id, name }) => ({ id, name })));
+        ids?.forEach((id) => selectedIngredients.add(id));
       } catch (error) {
         console.error(error);
       } finally {
@@ -32,5 +33,10 @@ export const useFilterIngredients = (): ReturnProps => {
     })();
   }, []);
 
-  return { ingredients, loading, selectedIds, onAddId: toggle };
+  return {
+    ingredients,
+    loading,
+    selectedIngredients,
+    onAddId: toggle,
+  };
 };

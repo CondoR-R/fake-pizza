@@ -20,6 +20,7 @@
 - [Bcrypt](https://www.npmjs.com/package/bcrypt)
 - [Prisma](https://www.prisma.io/)
 - [Axios](https://axios-http.com/ru/docs/intro)
+- [qs](https://www.npmjs.com/package/qs)
 
 ### База данных
 
