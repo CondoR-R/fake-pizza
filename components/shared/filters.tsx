@@ -12,7 +12,14 @@ interface Props {
 }
 
 export const Filters: React.FC<Props> = ({ className }) => {
-  const filters = useFilters();
+  const {
+    toggleIngredients,
+    togglePizzaTypes,
+    toggleSizes,
+    onChangeRangePrice,
+    onChangeSetPrice,
+    ...filters
+  } = useFilters();
 
   // получение ингредиентов с сервера
   const { ingredients, loading } = useGetIngredients();
@@ -32,7 +39,7 @@ export const Filters: React.FC<Props> = ({ className }) => {
           { text: "Тонкое", value: "1" },
           { text: "Традиционное", value: "2" },
         ]}
-        onClickCheckbox={filters.togglePizzaTypes}
+        onClickCheckbox={togglePizzaTypes}
         selected={filters.pizzaTypes}
       />
 
@@ -46,7 +53,7 @@ export const Filters: React.FC<Props> = ({ className }) => {
           { text: "30 см", value: "30" },
           { text: "40 см", value: "40" },
         ]}
-        onClickCheckbox={filters.toggleSizes}
+        onClickCheckbox={toggleSizes}
         selected={filters.sizes}
       />
 
@@ -61,9 +68,7 @@ export const Filters: React.FC<Props> = ({ className }) => {
             min={0}
             max={1000}
             value={filters.price.priceFrom}
-            onChange={(e) =>
-              filters.onChangeSetPrice("priceFrom", +e.target.value)
-            }
+            onChange={(e) => onChangeSetPrice("priceFrom", +e.target.value)}
           />
           <Input
             type="number"
@@ -71,9 +76,7 @@ export const Filters: React.FC<Props> = ({ className }) => {
             max={1500}
             placeholder="1000"
             value={filters.price.priceTo}
-            onChange={(e) =>
-              filters.onChangeSetPrice("priceTo", +e.target.value)
-            }
+            onChange={(e) => onChangeSetPrice("priceTo", +e.target.value)}
           />
         </div>
 
@@ -82,7 +85,7 @@ export const Filters: React.FC<Props> = ({ className }) => {
           max={1500}
           step={10}
           value={[filters.price.priceFrom, filters.price.priceTo]}
-          onValueChange={filters.onChangeRangePrice}
+          onValueChange={onChangeRangePrice}
         />
       </div>
 
@@ -94,7 +97,7 @@ export const Filters: React.FC<Props> = ({ className }) => {
         defaultItems={ingredients.slice(0, 6)}
         items={ingredients}
         loading={loading}
-        onClickCheckbox={filters.toggleIngredients}
+        onClickCheckbox={toggleIngredients}
         selected={filters.selectedIngredients}
         name="ingredients"
       />

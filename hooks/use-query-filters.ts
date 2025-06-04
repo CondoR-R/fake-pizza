@@ -16,7 +16,6 @@ export const useQueryFilters = ({
   selectedIngredients,
 }: Filters) => {
   const router = useRouter();
-
   useEffect(() => {
     const filters = {
       priceFrom: price.priceFrom === 0 ? undefined : price.priceFrom,
@@ -29,9 +28,6 @@ export const useQueryFilters = ({
     const query = qs.stringify(filters, {
       arrayFormat: "comma",
     });
-
     router.push(`?${query}`, { scroll: false });
   }, [price, pizzaTypes, sizes, selectedIngredients, router]);
-
-  return;
 };
