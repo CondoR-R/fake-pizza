@@ -7,10 +7,15 @@ import { Title } from "./title";
 import { cn } from "@/lib/utils";
 import { ProductCard } from "./product-card";
 import { useCategoryStore } from "@/store/category.store";
+import { Product, ProductItem } from "@prisma/client";
+
+interface Item extends Product {
+  items: ProductItem[];
+}
 
 interface Props {
   title: string;
-  items: unknown[];
+  items: Item[];
   className?: string;
   listClassName?: string;
   categoryId: number;
