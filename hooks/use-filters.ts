@@ -1,47 +1,54 @@
-import { useRouter, useSearchParams } from "next/navigation";
 import { useSet } from "react-use";
-import React, { useEffect } from "react";
-import qs from "qs";
-import { useGetIngredients } from "@/hooks/use-get-ingredients";
+import React from "react";
+import { useSearchParams } from "next/navigation";
+import { QueryFilters } from "@/hooks/use-query-filters";
 
 export interface PriceProps {
   priceFrom: number;
   priceTo: number;
 }
 
-export interface QueryFilters extends PriceProps {
-  pizzaTypes: string;
-  sizes: string;
-  ingredients: string;
+export interface Filters {
+  price: PriceProps;
+  selectedIngredients: Set<string>;
+  sizes: Set<string>;
+  pizzaTypes: Set<string>;
 }
 
-export const useFilters = () => {
-  // строка запроса
+interface ReturnProps extends Filters {
+  toggleIngredients: (key: string) => void;
+  toggleSizes: (key: string) => void;
+  togglePizzaTypes: (key: string) => void;
+  onChangeSetPrice: (name: keyof PriceProps, value: number) => void;
+  onChangeRangePrice: ([priceFrom, priceTo]: number[]) => void;
+}
+
+export const useFilters = (): ReturnProps => {
   const searchParams = useSearchParams() as unknown as Map<
     keyof QueryFilters,
     string
   >;
-  const router = useRouter();
 
-  // функция для получения массива из строки запроса
   const getParams = (key: keyof QueryFilters) => {
     return searchParams.get(key) ? searchParams.get(key)?.split(",") : [];
   };
 
-  // получение ингредиентов с сервера
-  const { ingredients, loading } = useGetIngredients();
-
-  // состояния для чекбоксов
+  // фильтр ингредиентов
   const [selectedIngredients, { toggle: toggleIngredients }] = useSet(
     new Set<string>(getParams("ingredients")),
   );
+
+  // фильтр размеров
   const [sizes, { toggle: toggleSizes }] = useSet(
     new Set<string>(getParams("sizes")),
   );
+
+  // фильтр размеров
   const [pizzaTypes, { toggle: togglePizzaTypes }] = useSet(
     new Set<string>(getParams("pizzaTypes")),
   );
 
+  // стоимость
   const [price, setPrice] = React.useState<PriceProps>({
     priceFrom: searchParams.get("priceFrom")
       ? Number(searchParams.get("priceFrom"))
@@ -58,25 +65,11 @@ export const useFilters = () => {
     }));
   };
 
-  useEffect(() => {
-    const filters = {
-      priceFrom: price.priceFrom === 0 ? undefined : price.priceFrom,
-      priceTo: price.priceTo === 1500 ? undefined : price.priceTo,
-      pizzaTypes: Array.from(pizzaTypes),
-      sizes: Array.from(sizes),
-      ingredients: Array.from(selectedIngredients),
-    };
-
-    const query = qs.stringify(filters, {
-      arrayFormat: "comma",
-    });
-
-    router.push(`?${query}`, { scroll: false });
-  }, [price, pizzaTypes, sizes, selectedIngredients, router]);
+  const onChangeRangePrice = ([priceFrom, priceTo]: number[]) => {
+    setPrice({ priceFrom, priceTo });
+  };
 
   return {
-    ingredients,
-    loading,
     selectedIngredients,
     sizes,
     pizzaTypes,
@@ -85,6 +78,6 @@ export const useFilters = () => {
     toggleSizes,
     togglePizzaTypes,
     onChangeSetPrice,
-    setPrice,
+    onChangeRangePrice,
   };
 };

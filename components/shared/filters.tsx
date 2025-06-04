@@ -5,26 +5,19 @@ import React from "react";
 import { Title } from "./title";
 import { Input, RangeSlider } from "../ui";
 import { CheckboxFiltersGroup } from "./checkbox-filters-group";
-import { useFilters } from "@/hooks/use-filters";
+import { useGetIngredients, useFilters, useQueryFilters } from "@/hooks";
 
 interface Props {
   className?: string;
 }
 
 export const Filters: React.FC<Props> = ({ className }) => {
-  const {
-    ingredients,
-    loading,
-    selectedIngredients,
-    sizes,
-    price,
-    pizzaTypes,
-    toggleIngredients,
-    togglePizzaTypes,
-    toggleSizes,
-    onChangeSetPrice,
-    setPrice,
-  } = useFilters();
+  const filters = useFilters();
+
+  // получение ингредиентов с сервера
+  const { ingredients, loading } = useGetIngredients();
+
+  useQueryFilters(filters);
 
   return (
     <div className={cn("", className)}>
@@ -39,8 +32,8 @@ export const Filters: React.FC<Props> = ({ className }) => {
           { text: "Тонкое", value: "1" },
           { text: "Традиционное", value: "2" },
         ]}
-        onClickCheckbox={togglePizzaTypes}
-        selected={pizzaTypes}
+        onClickCheckbox={filters.togglePizzaTypes}
+        selected={filters.pizzaTypes}
       />
 
       {/* Выбор размеров */}
@@ -53,8 +46,8 @@ export const Filters: React.FC<Props> = ({ className }) => {
           { text: "30 см", value: "30" },
           { text: "40 см", value: "40" },
         ]}
-        onClickCheckbox={toggleSizes}
-        selected={sizes}
+        onClickCheckbox={filters.toggleSizes}
+        selected={filters.sizes}
       />
 
       {/* ценовой диапазон */}
@@ -67,16 +60,20 @@ export const Filters: React.FC<Props> = ({ className }) => {
             placeholder="0"
             min={0}
             max={1000}
-            value={price.priceFrom}
-            onChange={(e) => onChangeSetPrice("priceFrom", +e.target.value)}
+            value={filters.price.priceFrom}
+            onChange={(e) =>
+              filters.onChangeSetPrice("priceFrom", +e.target.value)
+            }
           />
           <Input
             type="number"
             min={100}
             max={1500}
             placeholder="1000"
-            value={price.priceTo}
-            onChange={(e) => onChangeSetPrice("priceTo", +e.target.value)}
+            value={filters.price.priceTo}
+            onChange={(e) =>
+              filters.onChangeSetPrice("priceTo", +e.target.value)
+            }
           />
         </div>
 
@@ -84,10 +81,8 @@ export const Filters: React.FC<Props> = ({ className }) => {
           min={0}
           max={1500}
           step={10}
-          value={[price.priceFrom, price.priceTo]}
-          onValueChange={([priceFrom, priceTo]) =>
-            setPrice({ priceFrom, priceTo })
-          }
+          value={[filters.price.priceFrom, filters.price.priceTo]}
+          onValueChange={filters.onChangeRangePrice}
         />
       </div>
 
@@ -99,8 +94,8 @@ export const Filters: React.FC<Props> = ({ className }) => {
         defaultItems={ingredients.slice(0, 6)}
         items={ingredients}
         loading={loading}
-        onClickCheckbox={toggleIngredients}
-        selected={selectedIngredients}
+        onClickCheckbox={filters.toggleIngredients}
+        selected={filters.selectedIngredients}
         name="ingredients"
       />
     </div>
