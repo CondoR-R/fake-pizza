@@ -3,12 +3,11 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { Container, ProductImage, ProductInfo } from "@/components/shared";
 import Link from "next/link";
-import { pages } from "next/dist/build/templates/app-page";
 
-type Props = {
+interface Props {
   className?: string;
   params: { id: string };
-};
+}
 
 export default async function ProductPage({ params: { id } }: Props) {
   const product = await prisma.product.findFirst({
