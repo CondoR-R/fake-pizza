@@ -1,6 +1,6 @@
 // прописываем данные, которые попадут в БД
 
-import { prisma } from "../lib/prisma";
+import { prisma } from "@/shared/lib/prisma";
 import { hashSync } from "bcrypt";
 import { categories, ingredients, products } from "./constants";
 import { Prisma } from "@prisma/client";

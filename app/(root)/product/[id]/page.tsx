@@ -1,7 +1,7 @@
 import * as React from "react";
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/shared/lib/prisma";
 import { notFound } from "next/navigation";
-import { Container, ProductImage, ProductInfo } from "@/components/shared";
+import { Container, PizzaImage, ProductInfo } from "@/shared/components/shared";
 import Link from "next/link";
 
 interface Props {
@@ -38,7 +38,7 @@ export default async function ProductPage({ params: { id } }: Props) {
 
       {/*Информация о товаре*/}
       <div className="flex gap-11">
-        <ProductImage
+        <PizzaImage
           src={product.imageUrl}
           alt={product.name}
           size="md"

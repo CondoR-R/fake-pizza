@@ -1,12 +1,12 @@
 import * as React from "react";
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/shared/lib/prisma";
 import { notFound } from "next/navigation";
 import {
   ChooseProductModal,
   Container,
-  ProductImage,
+  PizzaImage,
   ProductInfo,
-} from "@/components/shared";
+} from "@/shared/components/shared";
 import Link from "next/link";
 
 type Props = {
